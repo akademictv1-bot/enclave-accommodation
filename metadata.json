@@ -1,0 +1,6 @@
+{
+  "name": "Enclave Accommodation",
+  "description": "Plataforma profissional de gestão de acomodações sofisticadas em Chimoio, Mutare e Nyanga com integração de reservas por WhatsApp e painel administrativo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

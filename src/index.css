@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+  --font-display: "Manrope", system-ui, -apple-system, sans-serif;
+}
+
+/* Custom CSS utilities */
+.glass-nav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(2, 54, 37, 0.45), rgba(2, 54, 37, 0.85));
+}
+
+.text-shadow-sm {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+

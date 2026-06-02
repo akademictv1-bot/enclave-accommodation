@@ -1,0 +1,135 @@
+{
+  "entities": {
+    "Homepage": {
+      "title": "Homepage Settings",
+      "description": "Customizable homepage headings, hero slider, and promotional content.",
+      "type": "object",
+      "properties": {
+        "hero_title": { "type": "string", "description": "Main heading for the hero banner." },
+        "hero_subtitle": { "type": "string", "description": "Subtitle explaining our offerings." },
+        "hero_badge": { "type": "string", "description": "Small uppercase badge text at the top of hero." },
+        "carousel_images": { "type": "array", "description": "List of image URLs for the active hero banner carousel." },
+        "promo_title": { "type": "string", "description": "Promotional highlight title." },
+        "promo_text": { "type": "string", "description": "Promotional highlight description body." }
+      },
+      "required": ["hero_title", "hero_subtitle"]
+    },
+    "About": {
+      "title": "About Us",
+      "description": "Company history, vision, mission, and core values.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "About section title" },
+        "description": { "type": "string", "description": "Introductory about description" },
+        "history": { "type": "string", "description": "History of the company" },
+        "mission": { "type": "string", "description": "The company's mission" },
+        "vision": { "type": "string", "description": "The company's vision" },
+        "values": { "type": "array", "description": "List of core values strings" }
+      },
+      "required": ["title", "description"]
+    },
+    "Host": {
+      "title": "Host",
+      "description": "Biographical information and greetings from the host.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Host full name" },
+        "photo_url": { "type": "string", "description": "URL of the host photo" },
+        "role": { "type": "string", "description": "Host subtitle or role" },
+        "bio": { "type": "string", "description": "Short bio description" },
+        "welcome_message": { "type": "string", "description": "Host greeting text" }
+      },
+      "required": ["name", "photo_url", "bio"]
+    },
+    "Contacts": {
+      "title": "Contacts",
+      "description": "General communication contacts and social links.",
+      "type": "object",
+      "properties": {
+        "whatsapp_number": { "type": "string", "description": "Main WhatsApp contact" },
+        "phone": { "type": "string", "description": "Main voice phone number" },
+        "email": { "type": "string", "description": "General support email" },
+        "address": { "type": "string", "description": "Physical headquarters address" },
+        "instagram_url": { "type": "string", "description": "Instagram link" },
+        "facebook_url": { "type": "string", "description": "Facebook link" }
+      },
+      "required": ["whatsapp_number", "email"]
+    },
+    "Accommodation": {
+      "title": "Accommodation",
+      "description": "Details of an individual accommodation or villa property.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier" },
+        "name": { "type": "string", "description": "Property title" },
+        "city": { "type": "string", "description": "City name" },
+        "country": { "type": "string", "description": "Country name" },
+        "address": { "type": "string", "description": "Full location address" },
+        "description": { "type": "string", "description": "Detailed description block" },
+        "price_per_night": { "type": "number", "description": "Price per night in MZN or local unit" },
+        "bedrooms": { "type": "number", "description": "Total bedroom count" },
+        "beds": { "type": "number", "description": "Total bed count" },
+        "bathrooms": { "type": "number", "description": "Total bathroom count" },
+        "max_guests": { "type": "number", "description": "Maximum allowed occupancy" },
+        "google_maps_link": { "type": "string", "description": "Embeddable or external Google Maps URL" },
+        "whatsapp_number": { "type": "string", "description": "Accommodation-specific booking WhatsApp" },
+        "status": { "type": "string", "description": "Active or Inactive status" },
+        "created_at": { "type": "string", "description": "Creation timestamp IsoString" }
+      },
+      "required": ["name", "city", "country", "price_per_night", "status"]
+    },
+    "AccommodationImage": {
+      "title": "AccommodationImage",
+      "description": "Image gallery asset referencing an accommodation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier" },
+        "accommodation_id": { "type": "string", "description": "Reference accommodation ID" },
+        "image_url": { "type": "string", "description": "Public URL to the image" },
+        "created_at": { "type": "string", "description": "Creation timestamp IsoString" }
+      },
+      "required": ["accommodation_id", "image_url"]
+    },
+    "Amenity": {
+      "title": "Amenity",
+      "description": "An amenity associated with an accommodation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier" },
+        "accommodation_id": { "type": "string", "description": "Reference accommodation ID" },
+        "amenity_name": { "type": "string", "description": "The amenity text description" }
+      },
+      "required": ["accommodation_id", "amenity_name"]
+    }
+  },
+  "firestore": {
+    "/settings/homepage": {
+      "schema": { "$ref": "Homepage" },
+      "description": "Global homepage section content."
+    },
+    "/settings/about": {
+      "schema": { "$ref": "About" },
+      "description": "Global company and profile settings."
+    },
+    "/settings/host": {
+      "schema": { "$ref": "Host" },
+      "description": "Global host credentials and messaging."
+    },
+    "/settings/contacts": {
+      "schema": { "$ref": "Contacts" },
+      "description": "Global WhatsApp, email and other communications."
+    },
+    "/accommodations/{accommodationId}": {
+      "schema": { "$ref": "Accommodation" },
+      "description": "A list of rent houses or cabins in Africa."
+    },
+    "/accommodation_images/{imageId}": {
+      "schema": { "$ref": "AccommodationImage" },
+      "description": "Images linked to rent properties."
+    },
+    "/amenities/{amenityId}": {
+      "schema": { "$ref": "Amenity" },
+      "description": "Service offerings of specific properties."
+    }
+  }
+}

@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper: Checks if the user is authenticated, has email verified, and is the bootstrapped admin.
+    function isAdminVerified() {
+      return request.auth != null 
+        && request.auth.token.email == "akademictv1@gmail.com"
+        && request.auth.token.email_verified == true;
+    }
+
+    // Helper: Checks if a document ID is valid (syntactic integrity and size boundaries)
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // HOMEPAGE, ABOUT, HOST, CONTACTS
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdminVerified() && isValidId(docId);
+    }
+
+    // ACCOMMODATIONS
+    match /accommodations/{accommodationId} {
+      allow read: if true;
+      allow write: if isAdminVerified() && isValidId(accommodationId);
+    }
+
+    // ACCOMMODATION_IMAGES
+    match /accommodation_images/{imageId} {
+      allow read: if true;
+      allow write: if isAdminVerified() && isValidId(imageId);
+    }
+
+    // AMENITIES
+    match /amenities/{amenityId} {
+      allow read: if true;
+      allow write: if isAdminVerified() && isValidId(amenityId);
+    }
+
+  }
+}
