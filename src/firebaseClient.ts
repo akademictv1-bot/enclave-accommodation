@@ -277,22 +277,35 @@ function setLocalStorageItem<T>(key: string, value: T): void {
   }
 }
 
+// Merge Firestore data with localStorage: local additions/edits take priority
+function mergeWithLocal<T extends { id: string }>(firestoreItems: T[], localKey: string, fallback: T[]): T[] {
+  const localItems = getLocalStorageItem<T[]>(localKey, []);
+  if (firestoreItems.length === 0) {
+    return localItems.length > 0 ? localItems : fallback;
+  }
+  const merged = [...firestoreItems];
+  for (const local of localItems) {
+    const idx = merged.findIndex(m => m.id === local.id);
+    if (idx >= 0) {
+      merged[idx] = local;
+    } else {
+      merged.push(local);
+    }
+  }
+  setLocalStorageItem(localKey, merged);
+  return merged;
+}
+
 export const dbService = {
   // ACCOMMODATIONS
   async getAccommodations(): Promise<Accommodation[]> {
     try {
       const snap = await getDocs(collection(db, "accommodations"));
-      const list: Accommodation[] = [];
+      const firestoreList: Accommodation[] = [];
       snap.forEach((docSnap) => {
-        list.push({ id: docSnap.id, ...docSnap.data() } as Accommodation);
+        firestoreList.push({ id: docSnap.id, ...docSnap.data() } as Accommodation);
       });
-      if (list.length === 0) {
-        // Fallback to local cache or defaults if empty
-        const cached = getLocalStorageItem<Accommodation[]>("local_accommodations", initialAccommodations);
-        return cached;
-      }
-      setLocalStorageItem("local_accommodations", list);
-      return list;
+      return mergeWithLocal(firestoreList, "local_accommodations", initialAccommodations);
     } catch (err) {
       console.warn("dbService.getAccommodations: falha ao carregar do Firestore, usando cache local.");
       return getLocalStorageItem<Accommodation[]>("local_accommodations", initialAccommodations);
@@ -365,20 +378,12 @@ export const dbService = {
   async getImages(accommodationId?: string): Promise<AccommodationImage[]> {
     try {
       const snap = await getDocs(collection(db, "accommodation_images"));
-      const list: AccommodationImage[] = [];
+      const firestoreList: AccommodationImage[] = [];
       snap.forEach((docSnap) => {
-        list.push({ id: docSnap.id, ...docSnap.data() } as AccommodationImage);
+        firestoreList.push({ id: docSnap.id, ...docSnap.data() } as AccommodationImage);
       });
-      
-      if (list.length === 0) {
-        // Fallback to local defaults if empty
-        const cached = getLocalStorageItem<AccommodationImage[]>("local_images", initialImages);
-        return accommodationId ? cached.filter(img => img.accommodation_id === accommodationId) : cached;
-      }
-      
-      setLocalStorageItem("local_images", list);
-      const res = accommodationId ? list.filter(img => img.accommodation_id === accommodationId) : list;
-      return res;
+      const merged = mergeWithLocal(firestoreList, "local_images", initialImages);
+      return accommodationId ? merged.filter(img => img.accommodation_id === accommodationId) : merged;
     } catch (err) {
       console.warn("dbService.getImages: falha ao carregar, usando cache local.");
       const cached = getLocalStorageItem<AccommodationImage[]>("local_images", initialImages);
@@ -429,19 +434,12 @@ export const dbService = {
   async getAmenities(accommodationId?: string): Promise<Amenity[]> {
     try {
       const snap = await getDocs(collection(db, "amenities"));
-      const list: Amenity[] = [];
+      const firestoreList: Amenity[] = [];
       snap.forEach((docSnap) => {
-        list.push({ id: docSnap.id, ...docSnap.data() } as Amenity);
+        firestoreList.push({ id: docSnap.id, ...docSnap.data() } as Amenity);
       });
-      
-      if (list.length === 0) {
-        const cached = getLocalStorageItem<Amenity[]>("local_amenities", initialAmenities);
-        return accommodationId ? cached.filter(am => am.accommodation_id === accommodationId) : cached;
-      }
-      
-      setLocalStorageItem("local_amenities", list);
-      const res = accommodationId ? list.filter(am => am.accommodation_id === accommodationId) : list;
-      return res;
+      const merged = mergeWithLocal(firestoreList, "local_amenities", initialAmenities);
+      return accommodationId ? merged.filter(am => am.accommodation_id === accommodationId) : merged;
     } catch (err) {
       console.warn("dbService.getAmenities: falha ao carregar, usando cache local.");
       const cached = getLocalStorageItem<Amenity[]>("local_amenities", initialAmenities);
