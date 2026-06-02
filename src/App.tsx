@@ -388,24 +388,29 @@ export default function App() {
 
             {/* Location */}
             <section className="bg-white rounded-xl border border-[#c0c9c2]/35 shadow-sm p-5 md:p-7 mt-6">
-              <h3 className="font-display font-bold text-xl text-[#023625] mb-4">{text("Localização", "Location")}</h3>
-              <div className="w-full h-72 bg-gray-200 rounded-xl overflow-hidden relative border shadow-sm">
-                <div className="absolute inset-0 bg-[#023625]/5 z-0" />
-                <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuClQnnudzbHh1Ow1MkIl7lQawp9A6Nd1xJHmKEWgf67A-rN5DJSFWTBLaS5dvFnhJFQA7Z23vLgQsB17IIGgNP7C7X_R6Cn1o6pXicw6Ed_Z_T02QO3C21BExSRb2nD9LGV3b9sAn8EABfUq6wKsTSlosy66rpDOXgPqtj66KJfODtKysR2bOHiUwTWSc8ClMJinZH5COgVWk3_IEnjiX_009nxKk6OeNg3vCEsiqGlxHNuhDB-7kB6dytao83JbO9ONMkwL4SwTdM" 
-                  className="w-full h-full object-cover filter contrast-125 opacity-70"
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display font-bold text-xl text-[#023625]">{text("Localização", "Location")}</h3>
+                <a 
+                  href={selectedAcc.google_maps_link || "https://maps.google.com"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-[#7b580b] hover:text-[#023625] flex items-center gap-1 transition-colors"
+                >
+                  <ExternalLink size={14} />
+                  <span>{text("Abrir no Google Maps", "Open in Google Maps")}</span>
+                </a>
+              </div>
+              <div className="w-full h-72 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                <iframe 
+                  title={text("Mapa da acomodação", "Accommodation map")}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                    selectedAcc.google_maps_link?.split("?q=")[1]?.split("&")[0] 
+                    || `${selectedAcc.city}, ${selectedAcc.country}`
+                  )}&output=embed`}
+                  className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-300"
+                  loading="lazy"
+                  allowFullScreen={false}
                 />
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <a 
-                    href={selectedAcc.google_maps_link || "https://maps.google.com"} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="bg-[#023625] text-white px-5 py-3 rounded-lg text-xs font-semibold shadow-xl flex items-center gap-2 hover:bg-[#1f4d3a] transition-all transform hover:scale-105"
-                  >
-                    <ExternalLink size={14} />
-                    <span>{text("Ver no Google Maps", "View on Google Maps")}</span>
-                  </a>
-                </div>
               </div>
             </section>
           </div>
